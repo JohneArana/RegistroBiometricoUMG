@@ -25,8 +25,8 @@ namespace RegistroBiometricoUMG.BaseDatos
                     Telefono      TEXT,
                     Correo        TEXT    NOT NULL,
                     TipoPersona   TEXT,
-                    Carrera       TEXT,
-                    Seccion       TEXT,
+                    Carrera       TEXT    NOT NULL,
+                    Seccion       TEXT    NOT NULL,
                     RutaFoto      TEXT,
                     NumeroCarnet  TEXT    UNIQUE,
                     FechaRegistro TEXT

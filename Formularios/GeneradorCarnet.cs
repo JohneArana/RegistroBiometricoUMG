@@ -104,7 +104,32 @@ namespace RegistroBiometricoUMG.Formularios
                 try
                 {
                     var img = XImage.FromFile(persona.RutaFoto);
-                    g.DrawImage(img, fotoX, fotoY, fotoW, fotoH);
+                    // Recortar centro de la foto (crop proporcional)
+                double proporcion = (double)img.PixelWidth / img.PixelHeight;
+                double srcX, srcY, srcW, srcH;
+                if (proporcion > 1) // más ancha que alta
+                {
+                    srcH = img.PixelHeight;
+                    srcW = srcH;
+                    srcX = (img.PixelWidth - srcW) / 2;
+                    srcY = 0;
+                }
+                else // más alta que ancha
+                {
+                    srcW = img.PixelWidth;
+                    srcH = srcW;
+                    srcX = 0;
+                    srcY = (img.PixelHeight - srcH) / 2;
+                }
+                var fotoRect = new XRect(fotoX, fotoY, fotoW, fotoH);
+                g.Save();
+                g.IntersectClip(fotoRect);
+                g.DrawImage(img, new XRect(
+                    fotoX - (fotoW * srcX / srcW),
+                    fotoY - (fotoH * srcY / srcH),
+                    fotoW * img.PixelWidth / srcW,
+                    fotoH * img.PixelHeight / srcH));
+                g.Restore();
                 }
                 catch { DibujarPlaceholder(g, fotoX, fotoY, fotoW, fotoH); }
             }
@@ -151,7 +176,7 @@ namespace RegistroBiometricoUMG.Formularios
             if (File.Exists(rutaQR))
             {
                 var qrImg = XImage.FromFile(rutaQR);
-                g.DrawImage(qrImg, mm(63), mm(14), mm(19), mm(19));
+                g.DrawImage(qrImg, mm(63), mm(14), mm(14), mm(14));
             }
 
             // ── Pie ─────────────────────────────────────────────────────────
